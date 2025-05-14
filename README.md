@@ -2,6 +2,8 @@
 
 **ChatGPTMDExport** is a utility to extract ChatGPT conversations from HTML exports and convert them into clean, readable Markdown files. It supports full conversation exports, filtered responses by prompt keywords, and exact prompt-response matching.
 
+**Export** your chats from ChatGPT to get started. I built this tool to help me create notes from questions I asked ChatGPT.
+
 ## 📦 Features
 
 * ✅ Extract all conversations from an HTML file
@@ -38,7 +40,7 @@ process_all_conversations("chat.html")
 ```python
 from parser import extract_specific_prompt
 
-extract_specific_prompt("chat.html", "DP Charges")
+process_specific_prompt("test1/ChatGPT1.html", "dp", "dp_charges")
 ```
 
 ### 3. Filter with prompt list
@@ -46,17 +48,20 @@ extract_specific_prompt("chat.html", "DP Charges")
 ```python
 from parser import process_all_conversations
 
-process_all_conversations("chat.html", prompt_list=["DP Charges", "Demat"])
+process_all_conversations("chat.html", prompt_list=["DP", "Demat"])
 ```
 
 ## Requirements
 
 * Python 3.7+
 * `beautifulsoup4`
+* `playwright`
 * `lxml` (optional but faster)
 
+Check attached requirements.txt file
+
 ```bash
-pip install beautifulsoup4
+pip install -r requirements.txt
 ```
 
 ## HTML Format
@@ -77,6 +82,7 @@ The tool expects exported ChatGPT history with this structure:
 
 * [ ] Add CLI support
 * [ ] Regex / case-insensitive matching
+* [ ] Merge all responses into a single notebook-style markdown file
 
 ## License
 
