@@ -1,8 +1,5 @@
 from bs4 import BeautifulSoup
-from pathlib import Path
 from typing import List, Tuple
-from playwright.sync_api import sync_playwright
-import os
 
 def parse_conversation_html(html_content: str) -> List[List[Tuple[str, str]]]:
     """Parses entire HTML with multiple <div class='conversation'> sections and extracts user/ChatGPT message pairs."""
@@ -48,7 +45,7 @@ def extract_to_markdown(conversation: List[Tuple[str, str]], prompts: List[str],
             md.write(f"### 🧑 User Prompt: `{user}`\n\n")
             md.write(f"**ChatGPT Response:**\n\n```\n{reply}\n```\n\n---\n")
 
-    print(f"✅ Extracted {len(filtered)} responses to: {output_file}")
+    print(f"Extracted {len(filtered)} responses to: {output_file}")
 
 
 def extract_conversation_to_markdown(conversation: List[Tuple[str, str]], output_file: str):
@@ -58,7 +55,7 @@ def extract_conversation_to_markdown(conversation: List[Tuple[str, str]], output
             md.write(f"### 🧑 User Prompt: `{user}`\n\n")
             md.write(f"**ChatGPT Response:**\n\n```\n{reply}\n```\n\n---\n")
 
-    print(f"✅ Full conversation saved to: {output_file}")
+    print(f"Full conversation saved to: {output_file}")
 
 
 def process_all_conversations(html_path: str, prompts: List[str] = None):
@@ -92,7 +89,7 @@ def extract_by_prompt_exact_to_markdown(conversation: List[Tuple[str, str]], pro
             md.write(f"### 🧑 User Prompt: `{user}`\n\n")
             md.write(f"**ChatGPT Response:**\n\n```\n{reply}\n```\n\n---\n")
 
-    print(f"✅ Extracted {len(filtered)} responses to: {output_file}")
+    print(f"Extracted {len(filtered)} responses to: {output_file}")
         
 def process_specific_prompt(html_path: str, prompt: str, prefix_file_name: str):
     """Processes all conversations and writes each to a separate markdown file."""
@@ -109,44 +106,3 @@ def process_specific_prompt(html_path: str, prompt: str, prefix_file_name: str):
         else:
             output_file = f"output/conversation_{idx+1}_full.md"
             extract_conversation_to_markdown(conv, output_file)
-
-def renders_html_with_playwright():
-    """Renders HTML using Playwright to execute JavaScript and save the output."""
-    
-    # Absolute path to your local HTML file
-    local_file = os.path.abspath("tes1/chat.html")
-    file_url = "file://" + local_file
-
-    # Output path
-    output_path = "tes1/rendered_output.html"
-
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)  # You can use .launch(headless=False) to see it
-        page = browser.new_page()
-        page.goto(file_url, wait_until="load")
-
-        # Get rendered HTML after JavaScript execution
-        rendered_html = page.content()
-
-        # Save to local file
-        with open(output_path, "w", encoding="utf-8") as f:
-            f.write(rendered_html)
-
-        print(f"Rendered HTML saved to {output_path}")
-        browser.close()
-    
-        return output_path
-    return None
-
-# Example usage
-# Uncomment the following line to render HTML with Playwright
-rendered_html_path = renders_html_with_playwright()
-# Uncomment the following line to process all conversations
-process_all_conversations(rendered_html_path, prompts=["Coding standards", "git"])
-# # Example call for all conversations with filters
-# process_specific_prompt("tes1/ChatGPT1.htm", "dp charges", "dp_charges")
-# process_specific_prompt("tes1/ChatGPT1.htm", "Coding standards", "coding_standards")
-# process_specific_prompt("tes1/ChatGPT1.htm","how to activate venv in git bash on windows","venv_git_bash")
-# process_all_conversations("tes1/ChatGPT1.htm", prompts=["Coding standards", "git"])
-# process_all_conversations("tes1/ChatGPT1.htm", prompts=["Coding standards"])
-# process_all_conversations("output_path", prompts=["Coding standards"])
